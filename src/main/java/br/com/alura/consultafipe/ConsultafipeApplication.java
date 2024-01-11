@@ -1,5 +1,6 @@
 package br.com.alura.consultafipe;
 
+import br.com.alura.consultafipe.principal.MenuBusca;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +14,10 @@ public class ConsultafipeApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Consulta FIPE");
+
+		MenuBusca menuBusca = new MenuBusca();
+
+		menuBusca.exibirMenu();
+
 	}
 }
