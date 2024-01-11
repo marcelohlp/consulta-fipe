@@ -1,12 +1,10 @@
 package br.com.alura.consultafipe.principal;
 
-import br.com.alura.consultafipe.model.DadosBase;
-import br.com.alura.consultafipe.model.DadosModelo;
-import br.com.alura.consultafipe.model.Marca;
-import br.com.alura.consultafipe.model.Modelo;
+import br.com.alura.consultafipe.model.*;
 import br.com.alura.consultafipe.util.ConsumoAPI;
 import br.com.alura.consultafipe.util.Conversor;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -29,9 +27,7 @@ public class MenuBusca {
 
         obterTipoVeiculo();
 
-        atualizarEderecoWeb(URL + tipoVeiculo + "/marcas");
-
-        atualizarJson();
+        atualizarDadosWeb(URL + tipoVeiculo + "/marcas");
 
         List<Marca> listaMarcas = obterMarcasVeiculos();
 
@@ -39,9 +35,7 @@ public class MenuBusca {
 
         obterCodigoMarcaVeiculo();
 
-        atualizarEderecoWeb("/" + codigoMarcaVeiculo + "/modelos");
-
-        atualizarJson();
+        atualizarDadosWeb("/" + codigoMarcaVeiculo + "/modelos");
 
         List<Modelo> listaModelos = obterModelosVeiculos();
 
@@ -53,8 +47,51 @@ public class MenuBusca {
 
         listaModelosFiltrados.forEach(System.out::println);
 
+        String codigoVeiculoDesejado = obterVeiculoDesejado();
+
+        atualizarDadosWeb("/" + codigoVeiculoDesejado + "/anos");
+
+        List<DadosBase> anosDisponiveis = obterListaAnosDisponiveis();
+
+        List<Veiculo> listaVeiculos = obterListaVeiculosResultado(anosDisponiveis);
+
+        listaVeiculos.forEach(System.out::println);
+
         leituraInput.close();
 
+    }
+
+    private List<Veiculo> obterListaVeiculosResultado(List<DadosBase> anosDisponiveis) {
+        List<DadosVeiculo> veiculos = obterListaVeiculosResultadoWeb(anosDisponiveis);
+        return veiculos.stream()
+                .map(Veiculo::new)
+                .sorted(Comparator.comparing(Veiculo::getAnoModelo))
+                .collect(Collectors.toList());
+    }
+
+    private List<DadosVeiculo> obterListaVeiculosResultadoWeb(List<DadosBase> anosDisponiveis) {
+        List<DadosVeiculo> veiculos = new ArrayList<>();
+        for (DadosBase anosDisponivei : anosDisponiveis) {
+            json = consumoAPI.obterDadosAPI(enderecoWeb + "/" + anosDisponivei.codigo());
+            DadosVeiculo veiculo = conversor.obterObjeto(json, DadosVeiculo.class);
+            veiculos.add(veiculo);
+        }
+        return veiculos;
+    }
+
+    private List<DadosBase> obterListaAnosDisponiveis() {
+        return conversor.obterLista(json, DadosBase.class);
+    }
+
+    private String obterVeiculoDesejado() {
+        System.out.println("\nDigite o código do veículo desejado:");
+        return leituraInput.nextLine();
+    }
+
+    private void atualizarDadosWeb(String enderecoWebAdicional) {
+        atualizarEderecoWeb(enderecoWebAdicional);
+
+        atualizarJson();
     }
 
     private static List<Modelo> obterListaResultadoBuscaVeiculos(List<Modelo> listaModelos, String veiculoBuscado) {
