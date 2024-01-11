@@ -47,8 +47,25 @@ public class MenuBusca {
 
         listaModelos.forEach(System.out::println);
 
+        String veiculoBuscado = obterVeiculoBuscado();
+
+        List<Modelo> listaModelosFiltrados = obterListaResultadoBuscaVeiculos(listaModelos, veiculoBuscado);
+
+        listaModelosFiltrados.forEach(System.out::println);
+
         leituraInput.close();
 
+    }
+
+    private static List<Modelo> obterListaResultadoBuscaVeiculos(List<Modelo> listaModelos, String veiculoBuscado) {
+        return listaModelos.stream()
+                        .filter(m -> m.getNome().toLowerCase().contains(veiculoBuscado.toLowerCase()))
+                                .collect(Collectors.toList());
+    }
+
+    private String obterVeiculoBuscado() {
+        System.out.println("\nDigite o nome do veículo que deseja procurar:");
+        return leituraInput.nextLine();
     }
 
     private List<Modelo> obterModelosVeiculos() {
@@ -60,7 +77,7 @@ public class MenuBusca {
     }
 
     private void obterCodigoMarcaVeiculo() {
-        System.out.println("\nSelecione o código do modelo desejado: ");
+        System.out.println("\nSelecione o código da marca desejado: ");
         codigoMarcaVeiculo = leituraInput.nextLine();
     }
 

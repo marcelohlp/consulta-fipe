@@ -15,7 +15,7 @@ public class Modelo {
 
     @Override
     public String toString() {
-        return "Nome: " + this.nome + ", Codigo: " + this.codigo;
+        return "Codigo: " + this.codigo + ", Nome: " + this.nome;
     }
 
     public Integer getCodigo() {
