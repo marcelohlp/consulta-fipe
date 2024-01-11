@@ -17,7 +17,7 @@ public class ConsultafipeApplication implements CommandLineRunner {
 
 		MenuBusca menuBusca = new MenuBusca();
 
-		menuBusca.exibirMenu();
+		menuBusca.consultarVeiculo();
 
 	}
 }
